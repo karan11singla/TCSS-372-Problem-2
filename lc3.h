@@ -3,5 +3,8 @@
 #define FETCH 0
 #define DECODE 1
 #define EVAL_ADDR 2
+#define FETCH_OP 3
+#define EXECUTE 4
+#define STORE 5
 
 // etc.

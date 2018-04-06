@@ -6,12 +6,25 @@ unsigned short memory[32]; // 32 words of memory enough to store simple program
 int controller (CPU_p cpu) {
     // check to make sure both pointers are not NULL
     // do any initializations here
-        unsigned int opcode, Rd, Rs1, Rs2, immed-offset;// fields for the IR
+    int r0[16];
+    int r1[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1}; // 0x0005
+    int r2[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1}; // 0x000F
+    int r3[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 0x0000
+    int r4[16];
+    int r5[16];
+    int r6[16];
+    int r7[16];
+    unsigned int pc = 0;
+    unsigned int ir = 0;
+    unsigned short ir[16];
+    unsigned int opcode, Rd, Rs1, Rs2, immed-offset;// fields for the IR
     state = FETCH;
     // for (;;) { // efficient endless loop to be used in the next problem
         switch (state) {
             case FETCH: // microstates 18, 33, 35 in the book
                 printf("Here in FETCH\n");
+                ir = memory[pc];
+                pc += 1;
                 // get memory[PC] into IR - memory is a global array
                 // increment PC
                 printf("Contents of IR = %04X\n", cpu->ir);
@@ -22,6 +35,7 @@ int controller (CPU_p cpu) {
                 state = DECODE;
                 break;
             case DECODE: // microstate 32
+                opcode =
                 // get the fields out of the IR
                 // make sure opcode is in integer form
                 // hint: use four unsigned int variables, opcode, Rd, Rs, and
@@ -48,14 +62,6 @@ int controller (CPU_p cpu) {
                 state = EXECUTE;
                 break;
             case EXECUTE: // Note that ST does not have an execute microstate
-                switch (opcode) {
-                    // do what the opcode is for, e.g. ADD
-                    // in case of TRAP: call trap(int trap_vector) routine,
-                    // see below for TRAP x25 (HALT)
-                }
-                state = STORE;
-                break;
-            case STORE: // Look at ST. Microstate 16 is the store to memory
                 switch (opcode) {
                     // do what the opcode is for, e.g. ADD
                     // in case of TRAP: call trap(int trap_vector) routine,

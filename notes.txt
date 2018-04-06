@@ -17,3 +17,5 @@ create register file
     memory addresses run from 0x0000 to 0x001F
 
 one hex code value for each instruction
+
+for loop implemented, but passes only once

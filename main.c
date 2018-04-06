@@ -1,7 +1,7 @@
 #include<stdio.h>
 
-int main() {
-	printf("Hello World");
+void main(int argc, char* argv[]) {
+	memory[0] = strtol(argv[1], temp, 16);
 
-	return 0;
+	
 }
