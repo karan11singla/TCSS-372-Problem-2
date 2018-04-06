@@ -1,20 +1,25 @@
 // lc3.c
 
+
+#include<stdio.h>
+
+#include "lc3.h"
 // you can define a simple memory module here for this program
 unsigned short memory[32]; // 32 words of memory enough to store simple program
 
-int controller (CPU_p cpu) {
+void controller () {
     // check to make sure both pointers are not NULL
     // do any initializations here
-        unsigned int opcode, Rd, Rs1, Rs2, immed-offset;// fields for the IR
-    state = FETCH;
+        unsigned int opcode, Rd, Rs1, Rs2, offset ;// fields for the IR
+    
+    int state = FETCH;
     // for (;;) { // efficient endless loop to be used in the next problem
         switch (state) {
             case FETCH: // microstates 18, 33, 35 in the book
                 printf("Here in FETCH\n");
                 // get memory[PC] into IR - memory is a global array
                 // increment PC
-                printf("Contents of IR = %04X\n", cpu->ir);
+                //printf("Contents of IR = %04X\n", cpu->ir);
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // put printf statements in each state and microstate to see that it is
 // working
@@ -63,13 +68,12 @@ int controller (CPU_p cpu) {
                 }
                 state = STORE;
                 break;
-            case STORE: // Look at ST. Microstate 16 is the store to memory
-                switch (opcode) {
-                    // write back to register or store MDR into memory
-                }
-                // do any clean up here in prep for the next complete cycle
-                state = FETCH;
-                break;
         }
     // if-loop }
+}
+
+int main(int argc, char* argv[]) {
+    //memory[0] = argv[1];
+    printf("Here");
+
 }
