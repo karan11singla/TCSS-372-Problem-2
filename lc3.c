@@ -2,6 +2,8 @@
 
 
 #include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
 
 #include "lc3.h"
 // you can define a simple memory module here for this program
@@ -76,4 +78,61 @@ int main(int argc, char* argv[]) {
     //memory[0] = argv[1];
     printf("Here");
 
+}
+
+
+unsigned int intToBinary(unsigned int num) {
+    if (num == 0) return 0;
+    return (num % 2) + 10 * intToBinary(num / 2);
+}
+
+unsigned int * toArray(unsigned int num) {
+    int length = log10(num) + 1;
+    unsigned int *arr = calloc(16, sizeof(unsigned int));
+    int i;
+    for (i = 15; i > 15 - length; i--) {
+        arr[i] = num % 10;
+        num /= 10;
+    }
+    return arr;
+}
+
+void executeAdd(unsigned int Rd, unsigned int Rs1, unsigned int Rs2,
+                unsigned int offset, unsigned int mode) {
+    if (mode == 0) { // need to parse mode from IR
+        Rd = Rs1 + Rs2;
+    } else {
+        Rd = Rs1 + offset;
+    }
+    // need to set condition codes
+}
+
+void executeAnd(unsigned int Rd, unsigned int Rs1, unsigned int Rs2,
+                unsigned int offset, unsigned int mode) {
+    unsigned int s1Bin = intToBinary(Rs1);
+    unsigned int *s1Arr = toArray(s1Bin);
+    unsigned int result;
+    int i;
+    if (mode == 0) { // need to parse mode from IR
+        unsigned int s2Bin = intToBinary(Rs2);
+        unsigned int *s2Arr = toArray(s2Bin);
+        for (i = 15; i >= 0; i--) {
+            if (s1Arr[i] == 1 && s2Arr[i] == 1) {
+                result += pow(10, 15 - i);
+            }
+        }
+    } else {
+        unsigned int imm5Bin = intToBinary(offset);
+        unsigned int *imm5Arr = toArray(imm5Bin);
+        for (i = 15; i >= 11; i--) {
+            if (s1Arr[i] == 1 && imm5Arr[i] == 1) {
+                result += pow(10, 15 - i);
+            }
+        }
+    }
+
+    // convert back from binary to integer
+    // store into Rd
+
+    // need to set condition codes
 }
