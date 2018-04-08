@@ -11,17 +11,19 @@ unsigned short memory[32]; // 32 words of memory enough to store simple program
 
 void controller () {
     // check to make sure both pointers are not NULL
+    CPU_p cpu;
     // do any initializations here
         unsigned int opcode, Rd, Rs1, Rs2, offset ;// fields for the IR
-
-    int state = FETCH;
+        int state = FETCH;
     // for (;;) { // efficient endless loop to be used in the next problem
         switch (state) {
             case FETCH: // microstates 18, 33, 35 in the book
                 printf("Here in FETCH\n");
                 // get memory[PC] into IR - memory is a global array
+                cpu.IR = memory[0];
                 // increment PC
-                //printf("Contents of IR = %04X\n", ir);
+                cpu.PC++;
+                printf("Contents of IR = %04X\n", cpu.IR);
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // put printf statements in each state and microstate to see that it is
 // working
@@ -75,9 +77,10 @@ void controller () {
 }
 
 int main(int argc, char* argv[]) {
-    //memory[0] = argv[1];
+    char *garbage;
+    memory[0] = strtol(argv[1],&garbage,16);
     printf("Here");
-
+    controller();
 }
 
 unsigned int intToBinary(unsigned int num) {
