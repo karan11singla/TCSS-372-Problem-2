@@ -12,6 +12,7 @@ unsigned short memory[32]; // 32 words of memory enough to store simple program
 void controller (CPU_p *cpu) {
     // check to make sure both pointers are not NULL
     // do any initializations here
+        cpu->PC = 0; // set starting address of PC
         unsigned int opcode, Rd, Rs1, Rs2, offset ;// fields for the IR
         int state = FETCH;
     // for (;;) { // efficient endless loop to be used in the next problem
@@ -19,7 +20,7 @@ void controller (CPU_p *cpu) {
             case FETCH: // microstates 18, 33, 35 in the book
                 printf("Here in FETCH\n");
                 // get memory[PC] into IR - memory is a global array
-                cpu->IR = memory[0];
+                cpu->IR = memory[cpu->PC];
                 // increment PC
                 cpu->PC++;
                 printf("Contents of IR = %04X\n", cpu->IR);
@@ -65,11 +66,10 @@ void controller (CPU_p *cpu) {
                 break;
             case STORE: // Look at ST. Microstate 16 is the store to memory
                 switch (opcode) {
-                    // do what the opcode is for, e.g. ADD
-                    // in case of TRAP: call trap(int trap_vector) routine,
-                    // see below for TRAP x25 (HALT)
+                    // write back to register or store MDR into memory
                 }
-                state = STORE;
+                // do any clean up here in prep for the next complete cycle
+                state = FETCH;
                 break;
         }
     // if-loop }
