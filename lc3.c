@@ -4,6 +4,8 @@
 #include<stdio.h>
 #include<math.h>
 #include<stdlib.h>
+=======
+>>>>>>> master
 
 #include "lc3.h"
 // you can define a simple memory module here for this program
@@ -13,7 +15,11 @@ void controller () {
     // check to make sure both pointers are not NULL
     // do any initializations here
         unsigned int opcode, Rd, Rs1, Rs2, offset ;// fields for the IR
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> master
     int state = FETCH;
     // for (;;) { // efficient endless loop to be used in the next problem
         switch (state) {
@@ -21,7 +27,11 @@ void controller () {
                 printf("Here in FETCH\n");
                 // get memory[PC] into IR - memory is a global array
                 // increment PC
+<<<<<<< HEAD
                 //printf("Contents of IR = %04X\n", ir);
+=======
+                //printf("Contents of IR = %04X\n", cpu->ir);
+>>>>>>> master
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // put printf statements in each state and microstate to see that it is
 // working
@@ -75,6 +85,7 @@ void controller () {
 }
 
 int main(int argc, char* argv[]) {
+<<<<<<< HEAD
     
 
 }
@@ -134,3 +145,9 @@ void executeAnd(unsigned int Rd, unsigned int Rs1, unsigned int Rs2,
 
     // need to set condition codes
 }
+=======
+    //memory[0] = argv[1];
+    printf("Here");
+
+}
+>>>>>>> master
