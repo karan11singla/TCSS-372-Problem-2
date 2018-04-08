@@ -9,8 +9,9 @@
 // you can define a simple memory module here for this program
 unsigned short memory[32]; // 32 words of memory enough to store simple program
 
-void controller () {
+void controller (CPU_p cpu) {
     // check to make sure both pointers are not NULL
+    
     // do any initializations here
         unsigned int opcode, Rd, Rs1, Rs2, offset ;// fields for the IR
 
@@ -20,6 +21,7 @@ void controller () {
             case FETCH: // microstates 18, 33, 35 in the book
                 printf("Here in FETCH\n");
                 // get memory[PC] into IR - memory is a global array
+                cpu->ir = memory[0];
                 // increment PC
                 //printf("Contents of IR = %04X\n", ir);
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -76,6 +78,8 @@ void controller () {
 
 int main(int argc, char* argv[]) {
     //memory[0] = argv[1];
+
+
     printf("Here");
 
 }

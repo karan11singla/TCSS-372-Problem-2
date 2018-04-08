@@ -7,4 +7,10 @@
 #define EXECUTE 4
 #define STORE 5
 
+struct cpu {
+	unsigned short IR;
+	unsigned int PC;
+};
+
+typedef struct cpu CPU_p;
 // etc.
