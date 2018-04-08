@@ -75,8 +75,7 @@ void controller () {
 }
 
 int main(int argc, char* argv[]) {
-    //memory[0] = argv[1];
-    printf("Here");
+    
 
 }
 
