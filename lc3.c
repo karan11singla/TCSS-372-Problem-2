@@ -2,8 +2,8 @@
 
 
 #include<stdio.h>
-#include<stdlib.h>
 #include<math.h>
+#include<stdlib.h>
 
 #include "lc3.h"
 // you can define a simple memory module here for this program
@@ -13,7 +13,7 @@ void controller () {
     // check to make sure both pointers are not NULL
     // do any initializations here
         unsigned int opcode, Rd, Rs1, Rs2, offset ;// fields for the IR
-    
+
     int state = FETCH;
     // for (;;) { // efficient endless loop to be used in the next problem
         switch (state) {
@@ -21,7 +21,7 @@ void controller () {
                 printf("Here in FETCH\n");
                 // get memory[PC] into IR - memory is a global array
                 // increment PC
-                //printf("Contents of IR = %04X\n", cpu->ir);
+                //printf("Contents of IR = %04X\n", ir);
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // put printf statements in each state and microstate to see that it is
 // working
@@ -80,7 +80,6 @@ int main(int argc, char* argv[]) {
 
 }
 
-
 unsigned int intToBinary(unsigned int num) {
     if (num == 0) return 0;
     return (num % 2) + 10 * intToBinary(num / 2);
@@ -97,42 +96,86 @@ unsigned int * toArray(unsigned int num) {
     return arr;
 }
 
+void setCC() {
+    if (Rd == 0) {
+        cc = 2;
+    } else if (Rd < 0) {
+        cc = 4;
+    } else {
+        cc = 1;
+    }
+}
+
 void executeAdd(unsigned int Rd, unsigned int Rs1, unsigned int Rs2,
-                unsigned int offset, unsigned int mode) {
+                unsigned int offset, unsigned int mode, unsigned int cc) {
     if (mode == 0) { // need to parse mode from IR
         Rd = Rs1 + Rs2;
     } else {
         Rd = Rs1 + offset;
     }
-    // need to set condition codes
+    setCC();
 }
 
 void executeAnd(unsigned int Rd, unsigned int Rs1, unsigned int Rs2,
-                unsigned int offset, unsigned int mode) {
+                unsigned int offset, unsigned int mode, unsigned int cc) {
     unsigned int s1Bin = intToBinary(Rs1);
     unsigned int *s1Arr = toArray(s1Bin);
-    unsigned int result;
+    unsigned int resultBin;
+    unsigned int resultInt;
     int i;
+    int j;
+    int k;
     if (mode == 0) { // need to parse mode from IR
         unsigned int s2Bin = intToBinary(Rs2);
         unsigned int *s2Arr = toArray(s2Bin);
         for (i = 15; i >= 0; i--) {
             if (s1Arr[i] == 1 && s2Arr[i] == 1) {
-                result += pow(10, 15 - i);
+                resultBin += pow(10, 15 - i);
             }
         }
     } else {
         unsigned int imm5Bin = intToBinary(offset);
         unsigned int *imm5Arr = toArray(imm5Bin);
         for (i = 15; i >= 11; i--) {
+            if (imm5Arr[11] == 1) { // if first bit is 1, sign extend
+                for (k = 0; k <= 10; k++) {
+                    imm5Arr[k] = 1;
+                }
+            }
             if (s1Arr[i] == 1 && imm5Arr[i] == 1) {
-                result += pow(10, 15 - i);
+                resultBin += pow(10, 15 - i);
             }
         }
     }
+    unsigned int *resultArr = toArray(resultBin);
+    for (j = 15; j > 0; j--) {
+        resultInt += resultArr[j] * pow(10, 15 - j);
+    }
+    if (resultArr[0] == 1) {
+        resultInt -= 32768;
+    }
+    Rd = resultInt;
+    setCC();
+}
 
-    // convert back from binary to integer
-    // store into Rd
-
-    // need to set condition codes
+void executeNot(unsigned int Rd, unsigned int Rs1) {
+    unsigned int *s1Arr = toArray(Rs1);
+    unsigned int resultInt;
+    int i;
+    int j;
+    for (i = 0; i < 16; i++) {
+        if (s1Arr[i] == 0) {
+            s1Arr[i] = 1;
+        } else {
+            s1Arr[i] = 0;
+        }
+    }
+    for (j = 15; j > 0; j--) {
+        resultInt += s1Arr[j] * pow(10, 15 - j);
+    }
+    if (resultArr[0] == 1) {
+        resultInt -= 32768;
+    }
+    Rd = resultInt;
+    setCC();
 }
