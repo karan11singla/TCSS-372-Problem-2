@@ -9,9 +9,8 @@
 // you can define a simple memory module here for this program
 unsigned short memory[32]; // 32 words of memory enough to store simple program
 
-void controller (CPU_p cpu) {
+void controller () {
     // check to make sure both pointers are not NULL
-    
     // do any initializations here
         unsigned int opcode, Rd, Rs1, Rs2, offset ;// fields for the IR
 
@@ -21,7 +20,6 @@ void controller (CPU_p cpu) {
             case FETCH: // microstates 18, 33, 35 in the book
                 printf("Here in FETCH\n");
                 // get memory[PC] into IR - memory is a global array
-                cpu->ir = memory[0];
                 // increment PC
                 //printf("Contents of IR = %04X\n", ir);
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -78,8 +76,6 @@ void controller (CPU_p cpu) {
 
 int main(int argc, char* argv[]) {
     //memory[0] = argv[1];
-
-
     printf("Here");
 
 }
@@ -100,27 +96,16 @@ unsigned int * toArray(unsigned int num) {
     return arr;
 }
 
-void setCC() {
-    if (Rd == 0) {
-        cc = 2;
-    } else if (Rd < 0) {
-        cc = 4;
-    } else {
-        cc = 1;
-    }
-}
-
-void executeAdd(unsigned int Rd, unsigned int Rs1, unsigned int Rs2,
+unsigned int executeAdd(unsigned int Rd, unsigned int Rs1, unsigned int Rs2,
                 unsigned int offset, unsigned int mode, unsigned int cc) {
     if (mode == 0) { // need to parse mode from IR
-        Rd = Rs1 + Rs2;
+        return Rs1 + Rs2;
     } else {
-        Rd = Rs1 + offset;
+        return Rs1 + offset;
     }
-    setCC();
 }
 
-void executeAnd(unsigned int Rd, unsigned int Rs1, unsigned int Rs2,
+unsigned int executeAnd(unsigned int Rd, unsigned int Rs1, unsigned int Rs2,
                 unsigned int offset, unsigned int mode, unsigned int cc) {
     unsigned int s1Bin = intToBinary(Rs1);
     unsigned int *s1Arr = toArray(s1Bin);
@@ -158,11 +143,10 @@ void executeAnd(unsigned int Rd, unsigned int Rs1, unsigned int Rs2,
     if (resultArr[0] == 1) {
         resultInt -= 32768;
     }
-    Rd = resultInt;
-    setCC();
+    return resultInt;
 }
 
-void executeNot(unsigned int Rd, unsigned int Rs1) {
+unsigned int executeNot(unsigned int Rd, unsigned int Rs1) {
     unsigned int *s1Arr = toArray(Rs1);
     unsigned int resultInt;
     int i;
@@ -177,9 +161,8 @@ void executeNot(unsigned int Rd, unsigned int Rs1) {
     for (j = 15; j > 0; j--) {
         resultInt += s1Arr[j] * pow(10, 15 - j);
     }
-    if (resultArr[0] == 1) {
+    if (s1Arr[0] == 1) {
         resultInt -= 32768;
     }
-    Rd = resultInt;
-    setCC();
+    return resultInt;
 }
