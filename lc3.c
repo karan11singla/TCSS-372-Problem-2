@@ -153,7 +153,7 @@ void controller (CPU_p *cpu) {
         unsigned int cc; // condition codes
         unsigned int mode;
         unsigned int trap_vector;
-        unsigned int registers[7] = {0,0,0,0,0,0,0};
+        unsigned int registers[8] = {0,0,0,0,0,0,0,0};
         unsigned int MAR, MDR;
         unsigned int nzp;
 
@@ -324,22 +324,36 @@ void controller (CPU_p *cpu) {
                 break;
             case EXECUTE: // Note that ST does not have an execute microstate
                 switch (opcode) {
-                    case 1:
+                    case 1: //ADD
                         Rd = executeAdd(Rs1, Rs2, offset, mode);
                         cc = setCC(Rd);
                         break;
-                    case 5:
+                    case 5: //AND
                         Rd = executeAnd(Rs1, Rs2, offset, mode);
                         cc = setCC(Rd);
                         break;
-                    case 9:
+                    case 9: //NOT
                         Rd = executeNot(Rs1);
                         cc = setCC(Rd);
                         break;
 
-                    case 2:
+                    case 2: //LD
 
                     break;
+
+                    case 0: //BR
+
+                    break;
+
+                    case 3: //ST
+                    break;
+
+                    case 12: //JMP
+                    break;
+
+                    case 15: //TRAP
+                    break;
+
                     // do what the opcode is for, e.g. ADD
                     // in case of TRAP: call trap(int trap_vector) routine,
                     // see below for TRAP x25 (HALT)

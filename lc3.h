@@ -10,7 +10,7 @@
 struct cpu {
 	unsigned short IR;
 	unsigned int PC;
-	unsigned int registers[7];
+	unsigned int registers[8];
 };
 
 typedef struct cpu CPU_p;
