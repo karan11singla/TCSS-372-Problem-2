@@ -153,10 +153,6 @@ void executeStore(unsigned int Rs1, unsigned int offset) {
     memory[MAR] = MDR;
 }
 
-void executeJump(unsigned int Rs1) {
-    cpu->PC = registers[Rs1];
-}
-
 void executeBranch(unsigned int offset, unsigned int cc, unsigned int nzp) {
     int *ccArr = toArray(cc);
     int *nzpArr = toArray(nzp);
@@ -200,8 +196,9 @@ void controller (CPU_p *cpu) {
         unsigned int cc; // condition codes
         unsigned int mode;
         unsigned int trap_vector;
-        unsigned int registers[8] = {0,0,0,0,0,0,0};
+        unsigned int registers[8] = {0,0,0,0,0,0,0,0};
         unsigned int MAR, MDR;
+        unsigned int nzp;
         int state = FETCH;
     // for (;;) { // efficient endless loop to be used in the next problem
         switch (state) {
@@ -283,7 +280,8 @@ void controller (CPU_p *cpu) {
 
                 //BR
                 if(opcode == 0) {
-
+                     unsigned short temp = (cpu->IR << 4);
+                     nzp = temp >> 13;
                 }
 
                 state = EVAL_ADDR;
@@ -292,25 +290,39 @@ void controller (CPU_p *cpu) {
                 // Look at the LD instruction to see microstate 2 example
                 switch (opcode) {
                     case 0: //BR
+                    {
+                        unsigned short temp = (cpu->IR << 7);
+                        offset = temp >> 7;
+                        break;
+                    }
 
                     case 1: // add
                         MAR = registers[Rs1] + offset;
                         MDR = registers[Rd];
                         break;
                     case 3: //ST
+                    {
+                        unsigned short temp = (cpu->IR << 4);
+                        Rs1 = (temp >> 13);
+
+                        temp = (cpu->IR << 7);
+                        offset = (temp >> 7);
                         break;
+                    }
                     case 5: // and
                         MAR = registers[Rs1] + offset;
                         MDR = registers[Rd];
-                        break;
-                    case 9: // not
                         break;
                     case 2: // ld
                         MAR = cpu->PC + offset;
                         MDR = registers[Rd];
                         break;
                     case 12: //JMP
+                    {
+                        unsigned short temp = (cpu->IR << 7);
+                        Rs1 = temp >> 13;
                         break;
+                    }
                     case 15: // trap
                         break;
                 // different opcodes require different handling
@@ -326,22 +338,70 @@ void controller (CPU_p *cpu) {
 
                     // get operands out of registers into A, B of ALU
                     // or get memory for load instr.
+
+                    case 1: //ADD
+                        cpu->registers[Rs1] = registers[Rs1];
+
+                        if(mode == 0) {
+                            cpu->registers[Rs2] = registers[Rs2];
+                        }
+                    break;
+
+                    case 5: //AND
+                        cpu->registers[Rs1] = registers[Rs1];
+
+                        if(mode == 0) {
+                            cpu->registers[Rs2] = registers[Rs2];
+                        }
+                    break;
+
+                    case 15:// TRAP
+                    break;
+
+                    /* Probably don't need as it's already loaded in decode phase
+                    case 2: //LD
+                    break;
+
+                    case 0: //BR
+                    break;
+
+                    case 3: //ST
+                    break;
+
+                    case 12: //JMP
+                    break;
+                    */
+
                 }
                 state = EXECUTE;
                 break;
             case EXECUTE: // Note that ST does not have an execute microstate
                 switch (opcode) {
-                    case 1:
-                        Rd = executeAdd(Rs1, Rs2, offset, mode);
+                    case 1: //ADD
+                        MDR = executeAdd(Rs1, Rs2, offset, mode);
                         cc = setCC(Rd);
                         break;
-                    case 5:
-                        Rd = executeAnd(Rs1, Rs2, offset, mode);
+                    case 5: //AND
+                        MDR = executeAnd(Rs1, Rs2, offset, mode);
                         cc = setCC(Rd);
                         break;
-                    case 9:
-                        Rd = executeNot(Rs1);
+                    case 9: //NOT
+                        MDR = executeNot(Rs1);
                         cc = setCC(Rd);
+                        break;
+                    case 2: //LD
+
+                        break;
+                    case 0: //BR
+                        break;
+
+                    case 3: //ST
+                        break;
+
+                    case 12: //JMP
+                        break;
+
+                    case 15: //TRAP
                         break;
 
                     // do what the opcode is for, e.g. ADD
@@ -351,7 +411,30 @@ void controller (CPU_p *cpu) {
                 state = STORE;
                 break;
             case STORE: // Look at ST. Microstate 16 is the store to memory
-                switch (opcode) {
+                switch (opcode)
+                    case 1: //ADD
+                        registers[Rd] = MDR;
+                        break;
+                    case 5: //AND
+                        registers[Rd] = MDR;
+                        break;
+                    case 9: //NOT
+                        registers[Rd] = MDR;
+                        break;
+                    case 2: //LD
+                        registers[Rd] = MDR;
+                        break;
+                    case 0: //BR
+                        break;
+                    case 3: //ST
+                        memory[MAR] = MDR;
+                        break;
+                    case 12: //JMP
+                        cpu->PC = registers[Rs1];
+                        break;
+                    case 15: //TRAP
+                        break;
+
                     // write back to register or store MDR into memory
                 }
                 // do any clean up here in prep for the next complete cycle
