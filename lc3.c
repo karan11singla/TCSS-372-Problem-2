@@ -149,12 +149,14 @@ void controller (CPU_p *cpu) {
     // check to make sure both pointers are not NULL
     // do any initializations here
     // initialize registers r0-r7
+
         cpu->PC = 0; // set starting address of PC
         unsigned int opcode, Rd, Rs1, Rs2, offset;// fields for the IR
         unsigned int cc; // condition codes
         unsigned int mode;
         unsigned int trap_vector;
         unsigned int registers[8] = {0,0,0,0,0,0,0};
+        unsigned int MAR, MDR;
         int state = FETCH;
     // for (;;) { // efficient endless loop to be used in the next problem
         switch (state) {
@@ -213,7 +215,7 @@ void controller (CPU_p *cpu) {
                     printf(" DR = %d \n Rs1 = %d \n CC = %d \n Rs2 = %d", Rd, Rs1,cc, Rs2);
                 }
 
-                // TRAP 
+                // TRAP
                 if(opcode == 15) {
                     unsigned short temp = (cpu->IR << 8);
                     trap_vector = temp >> 8;
@@ -229,7 +231,7 @@ void controller (CPU_p *cpu) {
 
                 }
 
-                //JMP 
+                //JMP
                 if(opcode == 12) {
                     unsigned short temp = (cpu->IR << 7);
                     Rs1 = temp >> 13;
@@ -248,20 +250,23 @@ void controller (CPU_p *cpu) {
                     case 0: //BR
 
                     case 1: // add
+                        MAR = registers[Rs1] + offset;
+                        MDR = registers[Rd];
                         break;
-
                     case 3: //ST
                         break;
-
                     case 5: // and
+                        MAR = registers[Rs1] + offset;
+                        MDR = registers[Rd];
                         break;
-
                     case 9: // not
                         break;
-
+                    case 2: // ld
+                        MAR = cpu->PC + offset;
+                        MDR = registers[Rd];
+                        break;
                     case 12: //JMP
                         break;
-
                     case 15: // trap
                         break;
                 // different opcodes require different handling
@@ -274,7 +279,7 @@ void controller (CPU_p *cpu) {
             // Look at ST. Microstate 23 example of getting a value out of a
             // register
                 switch (opcode) {
-                    
+
                     // get operands out of registers into A, B of ALU
                     // or get memory for load instr.
                 }
@@ -294,6 +299,7 @@ void controller (CPU_p *cpu) {
                         Rd = executeNot(Rs1);
                         cc = setCC(Rd);
                         break;
+
                     // do what the opcode is for, e.g. ADD
                     // in case of TRAP: call trap(int trap_vector) routine,
                     // see below for TRAP x25 (HALT)
@@ -308,6 +314,11 @@ void controller (CPU_p *cpu) {
                 state = FETCH;
                 break;
         }
+        int r;
+        for (r = 0; r < 8; r++) {
+            printf("R%d: %u, ", registers[r]);
+        }
+        printf("IR: %u, PC: %u", cpu->IR, cpu->PC); // need to print memory location
     // if-loop }
 }
 
