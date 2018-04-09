@@ -172,11 +172,7 @@ void executeBranch(unsigned int offset, unsigned int cc, unsigned int nzp, CPU_p
 }
 
 void executeTrap(int trap_vector) {
-<<<<<<< Updated upstream
     // trap(trap_vector);
-=======
-    //trap(trap_vector);
->>>>>>> Stashed changes
 }
 
 unsigned int setCC(unsigned int Rd) {
@@ -203,7 +199,7 @@ void controller (CPU_p *cpu) {
         unsigned int MAR, MDR;
         unsigned int nzp;
         int state = FETCH;
-    int i;
+        int i;
     for (i = 0; i < 1; i++) { // efficient endless loop to be used in the next problem
         switch (state) {
             case FETCH: // microstates 18, 33, 35 in the book
@@ -255,9 +251,10 @@ void controller (CPU_p *cpu) {
                         } else {
                             unsigned short temp3 = (cpu->IR <<13);
                             Rs2 = temp3 >> 13;
+                            //printf("RS2 HIT RS2 HIT  RS2 HIT ");
                         }
                     }
-                    printf(" DR = %d \n Rs1 = %d \n CC = %d \n Rs2 = %d", Rd, Rs1,cc, Rs2);
+                    printf(" DR = %d \n Rs1 = %d \n mode= %d \n Rs2 = %d", Rd, Rs1,mode, Rs2);
                 }
 
                 // TRAP
