@@ -249,8 +249,8 @@ void controller (CPU_p *cpu) {
                             unsigned short temp3 = (cpu->IR << 11);
                             offset = temp3 >> 11;
                         } else {
-                            unsigned short temp3 = (cpu->IR <<13);
-                            Rs2 = temp3 >> 13;
+                            unsigned short temp4 = (cpu->IR <<13);
+                            Rs2 = temp4 >> 13;
                             //printf("RS2 HIT RS2 HIT  RS2 HIT ");
                         }
                     }
