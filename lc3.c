@@ -399,7 +399,7 @@ void controller (CPU_p *cpu) {
                         executeStore(Rs1, offset);
                         break;
                     case 12: //JMP
-                        executeJump(unsigned int Rs1);
+                        executeJump(Rs1);
                         break;
                     case 15: //TRAP
                         executeTrap(trap_vector);
