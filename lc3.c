@@ -154,6 +154,7 @@ void controller (CPU_p *cpu) {
         unsigned int cc; // condition codes
         unsigned int mode;
         unsigned int trap_vector;
+        unsigned int registers[8] = {0,0,0,0,0,0,0};
         int state = FETCH;
     // for (;;) { // efficient endless loop to be used in the next problem
         switch (state) {
@@ -213,7 +214,7 @@ void controller (CPU_p *cpu) {
                 }
 
                 // TRAP 
-                if(opcode == 16) {
+                if(opcode == 15) {
                     unsigned short temp = (cpu->IR << 8);
                     trap_vector = temp >> 8;
                 }
@@ -244,12 +245,23 @@ void controller (CPU_p *cpu) {
             case EVAL_ADDR:
                 // Look at the LD instruction to see microstate 2 example
                 switch (opcode) {
+                    case 0: //BR
+
                     case 1: // add
                         break;
+
+                    case 3: //ST
+                        break;
+
                     case 5: // and
                         break;
+
                     case 9: // not
                         break;
+
+                    case 12: //JMP
+                        break;
+
                     case 15: // trap
                         break;
                 // different opcodes require different handling
