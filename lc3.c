@@ -73,7 +73,7 @@ unsigned int twosCIntToBinary(signed int num, CPU_p *cpu) {
         n /= 2;
     } // bin = binary rep of |num|
     if (neg) {
-        unsigned int bin2 = executeNot(bin);
+        unsigned int bin2 = executeNot(bin, cpu);
         unsigned int *arr = toArray(bin2);
         int i = 15;
         while (arr[i] == 1 && i >= 0) {
@@ -103,7 +103,7 @@ unsigned int executeAdd(unsigned int Rs1, unsigned int Rs2,
         }
         resultInt = twosCBinToInt(Rs1) + twosCBinToInt(o);
     }
-    return twosCIntToBinary(resultInt); // ???
+    return twosCIntToBinary(resultInt, cpu); // ???
 }
 
 unsigned int executeAnd(unsigned int Rs1, unsigned int Rs2,
@@ -140,7 +140,6 @@ void executeLoad(unsigned int Rd, unsigned int offset, CPU_p *cpu) {
     }
     cpu->MAR = cpu->PC + o;
     cpu->MDR = memory[cpu->MAR];
-    cpu->registers[Rd] = cpu->MDR;
 }
 
 void executeStore(unsigned int Rs1, unsigned int offset, CPU_p *cpu) {
@@ -297,8 +296,8 @@ void controller (CPU_p *cpu) {
                     }
 
                     case 1: // add
-                        cpu->MAR = registers[Rs1] + offset;
-                        cpu->MDR = registers[Rd];
+                        MAR = registers[Rs1] + offset;
+                        MDR = registers[Rd];
                         break;
                     case 3: //ST
                     {
@@ -310,12 +309,12 @@ void controller (CPU_p *cpu) {
                         break;
                     }
                     case 5: // and
-                        cpu->MAR = registers[Rs1] + offset;
-                        cpu->MDR = registers[Rd];
+                        MAR = registers[Rs1] + offset;
+                        MDR = registers[Rd];
                         break;
                     case 2: // ld
-                        cpu->MAR = cpu->PC + offset;
-                        cpu->MDR = registers[Rd];
+                        MAR = cpu->PC + offset;
+                        MDR = registers[Rd];
                         break;
                     case 12: //JMP
                     {
@@ -378,28 +377,27 @@ void controller (CPU_p *cpu) {
             case EXECUTE: // Note that ST does not have an execute microstate
                 switch (opcode) {
                     case 1: //ADD
-                        cpu->MDR = executeAdd(Rs1, Rs2, offset, mode);
+                        MDR = executeAdd(Rs1, Rs2, offset, mode, cpu);
                         cc = setCC(Rd);
                         break;
                     case 5: //AND
-                        cpu->MDR = executeAnd(Rs1, Rs2, offset, mode);
+                        MDR = executeAnd(Rs1, Rs2, offset, mode, cpu);
                         cc = setCC(Rd);
                         break;
                     case 9: //NOT
-                        cpu->MDR = executeNot(Rs1);
+                        MDR = executeNot(Rs1, cpu);
                         cc = setCC(Rd);
                         break;
                     case 2: //LD
-                        cpu->MDR = executeLoad(Rd,offset);
+                        executeLoad(Rd, offset, cpu);
                         break;
                     case 0: //BR
-                        executeBranch(offset, cc, nzp);
+                        executeBranch(offset, cc, nzp, cpu);
                         break;
                     case 3: //ST
-                        executeStore(Rs1, offset);
+                        executeStore(Rs1, offset, cpu);
                         break;
                     case 12: //JMP
-                        executeJump(Rs1);
                         break;
                     case 15: //TRAP
                         executeTrap(trap_vector);
@@ -412,23 +410,24 @@ void controller (CPU_p *cpu) {
                 state = STORE;
                 break;
             case STORE: // Look at ST. Microstate 16 is the store to memory
-                switch (opcode)
+                switch (opcode) {
                     case 1: //ADD
-                        registers[Rd] = cpu->MDR;
+                        registers[Rd] = MDR;
                         break;
                     case 5: //AND
-                        registers[Rd] = cpu->MDR;
+                        registers[Rd] = MDR;
                         break;
                     case 9: //NOT
-                        registers[Rd] = cpu->MDR;
+                        registers[Rd] = MDR;
                         break;
                     case 2: //LD
-                        registers[Rd] = cpu->MDR;
+                        registers[Rd] = MDR;
+                        cpu->registers[Rd] = cpu->MDR;
                         break;
                     case 0: //BR
                         break;
                     case 3: //ST
-                        memory[MAR] = cpu->MDR;
+                        memory[MAR] = MDR;
                         break;
                     case 12: //JMP
                         cpu->PC = registers[Rs1];
@@ -440,8 +439,7 @@ void controller (CPU_p *cpu) {
                 }
                 // do any clean up here in prep for the next complete cycle
                 state = FETCH;
-                break;
-        
+        }
         int r;
         for (r = 0; r < 8; r++) {
             printf("R%d: %u, ", r, registers[r]);
