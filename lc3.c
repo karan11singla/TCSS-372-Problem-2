@@ -61,9 +61,7 @@ unsigned int twosCIntToBinary(signed int num) {
     int neg = 0;
     if (num == 0) {
         return 0;
-    } //else if (num == -1) {
-        //return 1111111111111111;
-    //}
+    }
     if (num < 0) {
         neg = 1;
         n = -1 * num;
@@ -174,7 +172,6 @@ void controller (CPU_p *cpu) {
                 state = DECODE;
                 //break;
             case DECODE: // microstate 32
-                case DECODE: // microstate 32
                 // get the fields out of the IR
                 // make sure opcode is in integer form
                 // hint: use four unsigned int variables, opcode, Rd, Rs, and
@@ -316,7 +313,7 @@ void controller (CPU_p *cpu) {
         }
         int r;
         for (r = 0; r < 8; r++) {
-            printf("R%d: %u, ", registers[r]);
+            printf("R%d: %u, ", r, registers[r]);
         }
         printf("IR: %u, PC: %u", cpu->IR, cpu->PC); // need to print memory location
     // if-loop }
