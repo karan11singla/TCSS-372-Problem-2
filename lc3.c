@@ -168,13 +168,48 @@ void controller (CPU_p *cpu) {
 // working
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                 state = DECODE;
-                break;
+                //break;
             case DECODE: // microstate 32
+                case DECODE: // microstate 32
                 // get the fields out of the IR
                 // make sure opcode is in integer form
                 // hint: use four unsigned int variables, opcode, Rd, Rs, and
                 // immed7
                 // extract the bit fields from the IR into these variables
+
+                opcode = cpu->IR >> 12;
+                printf("OPCODE IS %d \n",opcode);
+
+                if(opcode == 1 || opcode == 5 || opcode == 9 || opcode == 2) {
+                    
+                    // gets destination register for ADD, AND, NOT, LD
+                    unsigned short temp = (cpu->IR << 4);
+                    Rd =(temp >> 13);
+
+                    // Gets RS1 for ADD, AND, NOT & offset for LD
+                    if(opcode == 1 || opcode == 5 || opcode == 9) {
+                         unsigned short temp2 = (cpu->IR << 7);
+                         Rs1 = (temp2 >> 13);
+                    } else {
+                        temp = (cpu->IR << 7);
+                        offset = (temp >> 7);
+                    }
+
+                    //Gets condition codes
+                    if( opcode == 1 || opcode == 5) {
+                        temp = (cpu->IR << 10);
+                        cc = (temp >> 15);
+
+                        if(cc == 1) {
+                            unsigned short temp3 = (cpu->IR << 11);
+                            offset = temp3 >> 11;
+                        } else {
+                            unsigned short temp3 = (cpu->IR <<13);
+                            Rs2 = temp3 >> 13;
+                        }
+                    }
+                    printf(" DR = %d \n Rs1 = %d \n CC = %d \n Rs2 = %d", Rd, Rs1,cc, Rs2);
+                }
                 state = EVAL_ADDR;
                 break;
             case EVAL_ADDR:
