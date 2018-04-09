@@ -199,17 +199,14 @@ void controller (CPU_p *cpu) {
                 switch (opcode) {
                     case 1:
                         Rd = executeAdd(Rs1, Rs2, offset, mode);
-                        // set cc
                         cc = setCC(Rd);
                         break;
                     case 5:
                         Rd = executeAnd(Rs1, Rs2, offset, mode);
-                        // set cc
                         cc = setCC(Rd);
                         break;
                     case 9:
                         Rd = executeNot(Rs1);
-                        // set cc
                         cc = setCC(Rd);
                         break;
                     // do what the opcode is for, e.g. ADD
