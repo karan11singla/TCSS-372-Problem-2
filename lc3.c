@@ -138,9 +138,9 @@ void executeLoad(unsigned int Rd, unsigned int offset, CPU_p *cpu) {
     if (offset / 100000000 == 1) {
         o += 1111111000000000;
     }
-    MAR = cpu->PC + o;
-    MDR = memory[MAR];
-    registers[Rd] = MDR;
+    cpu->MAR = cpu->PC + o;
+    cpu->MDR = memory[cpu->MAR];
+    cpu->registers[Rd] = cpu->MDR;
 }
 
 void executeStore(unsigned int Rs1, unsigned int offset, CPU_p *cpu) {
@@ -148,9 +148,9 @@ void executeStore(unsigned int Rs1, unsigned int offset, CPU_p *cpu) {
     if (offset / 100000000 == 1) {
         o += 1111111000000000;
     }
-    MAR = cpu->PC + o;
-    MDR = registers[Rs1];
-    memory[MAR] = MDR;
+    cpu->MAR = cpu->PC + o;
+    cpu->MDR = cpu->registers[Rs1];
+    memory[cpu->MAR] = cpu->MDR;
 }
 
 void executeBranch(unsigned int offset, unsigned int cc, unsigned int nzp, CPU_p *cpu) {
