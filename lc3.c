@@ -297,8 +297,8 @@ void controller (CPU_p *cpu) {
                     }
 
                     case 1: // add
-                        MAR = registers[Rs1] + offset;
-                        MDR = registers[Rd];
+                        cpu->MAR = registers[Rs1] + offset;
+                        cpu->MDR = registers[Rd];
                         break;
                     case 3: //ST
                     {
@@ -310,12 +310,12 @@ void controller (CPU_p *cpu) {
                         break;
                     }
                     case 5: // and
-                        MAR = registers[Rs1] + offset;
-                        MDR = registers[Rd];
+                        cpu->MAR = registers[Rs1] + offset;
+                        cpu->MDR = registers[Rd];
                         break;
                     case 2: // ld
-                        MAR = cpu->PC + offset;
-                        MDR = registers[Rd];
+                        cpu->MAR = cpu->PC + offset;
+                        cpu->MDR = registers[Rd];
                         break;
                     case 12: //JMP
                     {
@@ -378,19 +378,19 @@ void controller (CPU_p *cpu) {
             case EXECUTE: // Note that ST does not have an execute microstate
                 switch (opcode) {
                     case 1: //ADD
-                        MDR = executeAdd(Rs1, Rs2, offset, mode);
+                        cpu->MDR = executeAdd(Rs1, Rs2, offset, mode);
                         cc = setCC(Rd);
                         break;
                     case 5: //AND
-                        MDR = executeAnd(Rs1, Rs2, offset, mode);
+                        cpu->MDR = executeAnd(Rs1, Rs2, offset, mode);
                         cc = setCC(Rd);
                         break;
                     case 9: //NOT
-                        MDR = executeNot(Rs1);
+                        cpu->MDR = executeNot(Rs1);
                         cc = setCC(Rd);
                         break;
                     case 2: //LD
-                        MDR = executeLoad(Rd,offset);
+                        cpu->MDR = executeLoad(Rd,offset);
                         break;
                     case 0: //BR
                         executeBranch(offset, cc, nzp);
@@ -414,21 +414,21 @@ void controller (CPU_p *cpu) {
             case STORE: // Look at ST. Microstate 16 is the store to memory
                 switch (opcode)
                     case 1: //ADD
-                        registers[Rd] = MDR;
+                        registers[Rd] = cpu->MDR;
                         break;
                     case 5: //AND
-                        registers[Rd] = MDR;
+                        registers[Rd] = cpu->MDR;
                         break;
                     case 9: //NOT
-                        registers[Rd] = MDR;
+                        registers[Rd] = cpu->MDR;
                         break;
                     case 2: //LD
-                        registers[Rd] = MDR;
+                        registers[Rd] = cpu->MDR;
                         break;
                     case 0: //BR
                         break;
                     case 3: //ST
-                        memory[MAR] = MDR;
+                        memory[MAR] = cpu->MDR;
                         break;
                     case 12: //JMP
                         cpu->PC = registers[Rs1];
@@ -441,7 +441,7 @@ void controller (CPU_p *cpu) {
                 // do any clean up here in prep for the next complete cycle
                 state = FETCH;
                 break;
-        }
+        
         int r;
         for (r = 0; r < 8; r++) {
             printf("R%d: %u, ", r, registers[r]);
