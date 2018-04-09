@@ -381,31 +381,37 @@ void controller (CPU_p *cpu) {
                 break;
             case EXECUTE: // Note that ST does not have an execute microstate
                 switch (opcode) {
-                    case 1: //ADD
-                        Rd = executeAdd(Rs1, Rs2, offset, mode);
-                        cc = setCC(Rd);
-                        break;
-                    case 5: //AND
-                        Rd = executeAnd(Rs1, Rs2, offset, mode);
-                        cc = setCC(Rd);
-                        break;
-                    case 9: //NOT
-                        Rd = executeNot(Rs1);
-                        cc = setCC(Rd);
-                        break;
-                    case 2: //LD
-                        break;
-                        case 0: //BR
+                        case 1: //ADD
+                            Rd = executeAdd(Rs1, Rs2, offset, mode);
+                            cc = setCC(Rd);
+                            break;
+                        case 5: //AND
+                            Rd = executeAnd(Rs1, Rs2, offset, mode);
+                            cc = setCC(Rd);
+                            break;
+                        case 9: //NOT
+                            Rd = executeNot(Rs1);
+                            cc = setCC(Rd);
+                            break;
+                    
+                        case 2: //LD
+                            Rd = executeLoad(Rd,offset);
+                            break;
 
+                        case 0: //BR
+                            executeBranch(offset, cc, nzp);
                         break;
 
                         case 3: //ST
+                            executeStore(Rs1, offset);
                         break;
 
                         case 12: //JMP
+                            executeJump(unsigned int Rs1);
                         break;
 
                         case 15: //TRAP
+                            executeTrap(trap_vector);
                         break;
 
                     // do what the opcode is for, e.g. ADD
