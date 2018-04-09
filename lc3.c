@@ -172,7 +172,11 @@ void executeBranch(unsigned int offset, unsigned int cc, unsigned int nzp, CPU_p
 }
 
 void executeTrap(int trap_vector) {
+<<<<<<< Updated upstream
     // trap(trap_vector);
+=======
+    //trap(trap_vector);
+>>>>>>> Stashed changes
 }
 
 unsigned int setCC(unsigned int Rd) {
@@ -195,7 +199,7 @@ void controller (CPU_p *cpu) {
         unsigned int cc; // condition codes
         unsigned int mode;
         unsigned int trap_vector;
-        unsigned int registers[8] = {0,0,0,0,0,0,0,0};
+        unsigned int registers[8] = {1,2,3,4,5,6,7,8};
         unsigned int MAR, MDR;
         unsigned int nzp;
         int state = FETCH;
@@ -440,12 +444,16 @@ void controller (CPU_p *cpu) {
                 // do any clean up here in prep for the next complete cycle
                 state = FETCH;
         }
+
+        FILE *fp;
+        fp = fopen("output.txt","w");
         int r;
         for (r = 0; r < 8; r++) {
-            printf("R%d: %u, ", r, registers[r]);
+            fprintf(fp, "R%d: %u, \n", r, registers[r]);
         }
-        printf("IR: %u, PC: %u", cpu->IR, cpu->PC); // need to print memory location
+        fprintf("IR: %u, PC: %u", cpu->IR, cpu->PC); // need to print memory location
     }
+    // if-loop }
 }
 
 int main(int argc, char* argv[]) {
