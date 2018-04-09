@@ -38,7 +38,7 @@ unsigned int * toArray(unsigned int num) {
     return arr;
 }
 
-unsigned int executeNot(unsigned int Rs1) {
+unsigned int executeNot(unsigned int Rs1, CPU_p *cpu) {
     unsigned int *s1Arr = toArray(Rs1);
     unsigned int resultBin;
     int i;
@@ -56,7 +56,7 @@ unsigned int executeNot(unsigned int Rs1) {
     return resultBin;
 }
 
-unsigned int twosCIntToBinary(signed int num) {
+unsigned int twosCIntToBinary(signed int num, CPU_p *cpu) {
     int n = num;
     int neg = 0;
     if (num == 0) {
@@ -92,7 +92,7 @@ unsigned int twosCIntToBinary(signed int num) {
 }
 
 unsigned int executeAdd(unsigned int Rs1, unsigned int Rs2,
-                        unsigned int offset, unsigned int mode) {
+                        unsigned int offset, unsigned int mode, CPU_p *cpu) {
     signed int resultInt;
     unsigned int o = offset;
     if (mode == 0) {
@@ -107,7 +107,7 @@ unsigned int executeAdd(unsigned int Rs1, unsigned int Rs2,
 }
 
 unsigned int executeAnd(unsigned int Rs1, unsigned int Rs2,
-                        unsigned int offset, unsigned int mode) {
+                        unsigned int offset, unsigned int mode, CPU_p *cpu) {
     unsigned int *s1Arr = toArray(Rs1);
     unsigned int resultBin;
     unsigned int o = offset;
@@ -133,7 +133,7 @@ unsigned int executeAnd(unsigned int Rs1, unsigned int Rs2,
     return resultBin;
 }
 
-void executeLoad(unsigned int Rd, unsigned int offset) {
+void executeLoad(unsigned int Rd, unsigned int offset, CPU_p *cpu) {
     unsigned int o;
     if (offset / 100000000 == 1) {
         o += 1111111000000000;
@@ -143,7 +143,7 @@ void executeLoad(unsigned int Rd, unsigned int offset) {
     registers[Rd] = MDR;
 }
 
-void executeStore(unsigned int Rs1, unsigned int offset) {
+void executeStore(unsigned int Rs1, unsigned int offset, CPU_p *cpu) {
     unsigned int o;
     if (offset / 100000000 == 1) {
         o += 1111111000000000;
@@ -153,7 +153,7 @@ void executeStore(unsigned int Rs1, unsigned int offset) {
     memory[MAR] = MDR;
 }
 
-void executeBranch(unsigned int offset, unsigned int cc, unsigned int nzp) {
+void executeBranch(unsigned int offset, unsigned int cc, unsigned int nzp, CPU_p *cpu) {
     unsigned int *ccArr = toArray(cc);
     unsigned int *nzpArr = toArray(nzp);
     int pass = 0;
