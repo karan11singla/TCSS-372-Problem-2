@@ -191,7 +191,7 @@ void controller (CPU_p *cpu) {
     // initialize registers r0-r7
 
         cpu->PC = 0; // set starting address of PC
-        unsigned int opcode, Rd, Rs1, Rs2, offset;// fields for the IR
+        unsigned short opcode, Rd, Rs1, Rs2, offset;// fields for the IR
         unsigned int cc; // condition codes
         unsigned int mode;
         unsigned int trap_vector;
@@ -249,8 +249,10 @@ void controller (CPU_p *cpu) {
                             unsigned short temp3 = (cpu->IR << 11);
                             offset = temp3 >> 11;
                         } else {
+                            printf(" CPU IR IS %d\n",cpu->IR);
                             unsigned short temp4 = (cpu->IR <<13);
                             Rs2 = temp4 >> 13;
+                            printf("%d \n",Rs2);
                             //printf("RS2 HIT RS2 HIT  RS2 HIT ");
                         }
                     }
