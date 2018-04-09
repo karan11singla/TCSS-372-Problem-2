@@ -153,6 +153,7 @@ void controller (CPU_p *cpu) {
         unsigned int opcode, Rd, Rs1, Rs2, offset;// fields for the IR
         unsigned int cc; // condition codes
         unsigned int mode;
+        unsigned int trap_vector;
         int state = FETCH;
     // for (;;) { // efficient endless loop to be used in the next problem
         switch (state) {
@@ -200,7 +201,7 @@ void controller (CPU_p *cpu) {
                         temp = (cpu->IR << 10);
                         mode = (temp >> 15);
 
-                        
+
                         if(mode == 1) {
                             unsigned short temp3 = (cpu->IR << 11);
                             offset = temp3 >> 11;
@@ -214,7 +215,8 @@ void controller (CPU_p *cpu) {
 
                 // TRAP 
                 if(opcode == 16) {
-
+                    unsigned short temp = (cpu->IR << 8);
+                    trap_vector = temp >> 8;
                 }
 
                 //ST
@@ -233,7 +235,10 @@ void controller (CPU_p *cpu) {
                     Rs1 = temp >> 13;
                 }
 
+                //BR
+                if(opcode == 0) {
 
+                }
 
                 state = EVAL_ADDR;
                 break;
