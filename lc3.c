@@ -182,7 +182,6 @@ void controller (CPU_p *cpu) {
                 printf("OPCODE IS %d \n",opcode);
 
                 if(opcode == 1 || opcode == 5 || opcode == 9 || opcode == 2) {
-                    
                     // gets destination register for ADD, AND, NOT, LD
                     unsigned short temp = (cpu->IR << 4);
                     Rd =(temp >> 13);
@@ -245,6 +244,14 @@ void controller (CPU_p *cpu) {
             case EVAL_ADDR:
                 // Look at the LD instruction to see microstate 2 example
                 switch (opcode) {
+                    case 1: // add
+                        break;
+                    case 5: // and
+                        break;
+                    case 9: // not
+                        break;
+                    case 15: // trap
+                        break;
                 // different opcodes require different handling
                 // compute effective address, e.g. add sext(immed7) to
                 // register
@@ -255,6 +262,7 @@ void controller (CPU_p *cpu) {
             // Look at ST. Microstate 23 example of getting a value out of a
             // register
                 switch (opcode) {
+                    
                     // get operands out of registers into A, B of ALU
                     // or get memory for load instr.
                 }
