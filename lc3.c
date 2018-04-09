@@ -195,12 +195,13 @@ void controller (CPU_p *cpu) {
                         offset = (temp >> 7);
                     }
 
-                    //Gets condition codes
+                    //Gets modes for ADD/AND
                     if( opcode == 1 || opcode == 5) {
                         temp = (cpu->IR << 10);
-                        cc = (temp >> 15);
+                        mode = (temp >> 15);
 
-                        if(cc == 1) {
+                        
+                        if(mode == 1) {
                             unsigned short temp3 = (cpu->IR << 11);
                             offset = temp3 >> 11;
                         } else {
@@ -210,6 +211,30 @@ void controller (CPU_p *cpu) {
                     }
                     printf(" DR = %d \n Rs1 = %d \n CC = %d \n Rs2 = %d", Rd, Rs1,cc, Rs2);
                 }
+
+                // TRAP 
+                if(opcode == 16) {
+
+                }
+
+                //ST
+                if(opcode == 3) {
+                    unsigned short temp = (cpu->IR << 4);
+                    Rs1 = temp >> 13;
+
+                    temp = (cpu->IR <<7);
+                    offset = temp >> 7;
+
+                }
+
+                //JMP 
+                if(opcode == 12) {
+                    unsigned short temp = (cpu->IR << 7);
+                    Rs1 = temp >> 13;
+                }
+
+
+
                 state = EVAL_ADDR;
                 break;
             case EVAL_ADDR:
