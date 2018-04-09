@@ -155,6 +155,7 @@ void controller (CPU_p *cpu) {
         unsigned int trap_vector;
         unsigned int registers[7] = {0,0,0,0,0,0,0};
         unsigned int MAR, MDR;
+        unsigned int nzp;
 
         int state = FETCH;
     // for (;;) { // efficient endless loop to be used in the next problem
@@ -218,6 +219,12 @@ void controller (CPU_p *cpu) {
                     unsigned short temp = (cpu->IR << 8);
                     trap_vector = temp >> 8;
                 }
+
+                if(opcode == 0) {
+                     unsigned short temp = (cpu->IR << 4);
+                     nzp = temp >> 13;
+                }
+
                 state = EVAL_ADDR;
                 break;
             case EVAL_ADDR:
@@ -330,6 +337,9 @@ void controller (CPU_p *cpu) {
                         cc = setCC(Rd);
                         break;
 
+                    case 2:
+
+                    break;
                     // do what the opcode is for, e.g. ADD
                     // in case of TRAP: call trap(int trap_vector) routine,
                     // see below for TRAP x25 (HALT)
