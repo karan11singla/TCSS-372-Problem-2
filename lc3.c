@@ -154,11 +154,11 @@ void executeStore(unsigned int Rs1, unsigned int offset) {
 }
 
 void executeBranch(unsigned int offset, unsigned int cc, unsigned int nzp) {
-    int *ccArr = toArray(cc);
-    int *nzpArr = toArray(nzp);
+    unsigned int *ccArr = toArray(cc);
+    unsigned int *nzpArr = toArray(nzp);
     int pass = 0;
     int i;
-    for (i = 15, i >= 13, i--) {
+    for (i = 15; i >= 13; i--) {
         if (ccArr[i] == 1 && nzpArr[i] == 1) {
             pass = 1;
         }
