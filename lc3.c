@@ -203,6 +203,7 @@ void controller (CPU_p *cpu) {
         unsigned int MAR, MDR;
         unsigned int nzp;
         int state = FETCH;
+    int i;
     for (i = 0; i < 1; i++) { // efficient endless loop to be used in the next problem
         switch (state) {
             case FETCH: // microstates 18, 33, 35 in the book
