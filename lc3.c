@@ -172,7 +172,7 @@ void executeBranch(unsigned int offset, unsigned int cc, unsigned int nzp, CPU_p
 }
 
 void executeTrap(int trap_vector) {
-    trap(trap_vector);
+    // trap(trap_vector);
 }
 
 unsigned int setCC(unsigned int Rd) {
@@ -199,7 +199,7 @@ void controller (CPU_p *cpu) {
         unsigned int MAR, MDR;
         unsigned int nzp;
         int state = FETCH;
-    // for (;;) { // efficient endless loop to be used in the next problem
+    for (i = 0; i < 1; i++) { // efficient endless loop to be used in the next problem
         switch (state) {
             case FETCH: // microstates 18, 33, 35 in the book
                 printf("Here in FETCH\n");
@@ -445,7 +445,7 @@ void controller (CPU_p *cpu) {
             printf("R%d: %u, ", r, registers[r]);
         }
         printf("IR: %u, PC: %u", cpu->IR, cpu->PC); // need to print memory location
-    // if-loop }
+    }
 }
 
 int main(int argc, char* argv[]) {
