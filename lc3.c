@@ -203,7 +203,7 @@ void controller (CPU_p *cpu) {
     for (i = 0; i < 1; i++) { // efficient endless loop to be used in the next problem
         switch (state) {
             case FETCH: // microstates 18, 33, 35 in the book
-                printf("Here in FETCH\n");
+                //printf("Here in FETCH\n");
                 // get memory[PC] into IR - memory is a global array
                 cpu->IR = memory[cpu->PC];
                 // increment PC
@@ -223,7 +223,7 @@ void controller (CPU_p *cpu) {
                 // extract the bit fields from the IR into these variables
 
                 opcode = cpu->IR >> 12;
-                printf("OPCODE IS %d \n",opcode);
+                //printf("OPCODE IS %d \n",opcode);
 
                 if(opcode == 1 || opcode == 5 || opcode == 9 || opcode == 2) {
                     // gets destination register for ADD, AND, NOT, LD
@@ -249,14 +249,14 @@ void controller (CPU_p *cpu) {
                             unsigned short temp3 = (cpu->IR << 11);
                             offset = temp3 >> 11;
                         } else {
-                            printf(" CPU IR IS %d\n",cpu->IR);
+                            //printf(" CPU IR IS %d\n",cpu->IR);
                             unsigned short temp4 = (cpu->IR <<13);
                             Rs2 = temp4 >> 13;
-                            printf("%d \n",Rs2);
+                            //printf("%d \n",Rs2);
                             //printf("RS2 HIT RS2 HIT  RS2 HIT ");
                         }
                     }
-                    printf(" DR = %d \n Rs1 = %d \n mode= %d \n Rs2 = %d", Rd, Rs1,mode, Rs2);
+                    printf(" DR = %d  Rs1 = %d  mode= %d  Rs2 = %d \n", Rd, Rs1,mode, Rs2);
                 }
 
                 // TRAP
@@ -300,6 +300,7 @@ void controller (CPU_p *cpu) {
                     }
 
                     case 1: // add
+                        
                         MAR = registers[Rs1] + offset;
                         MDR = registers[Rd];
                         break;
@@ -445,13 +446,14 @@ void controller (CPU_p *cpu) {
                 state = FETCH;
         }
 
-        FILE *fp;
-        fp = fopen("output.txt","w");
+        // FILE *fp;
+        // fp = fopen("output.txt","w");
         int r;
         for (r = 0; r < 8; r++) {
-            fprintf(fp, "R%d: %u, \n", r, registers[r]);
+            printf( "R%d: %u, \n", r, cpu->registers[r]);
         }
-        fprintf("IR: %u, PC: %u", cpu->IR, cpu->PC); // need to print memory location
+
+        printf("IR: %u, PC: %u", cpu->IR, cpu->PC); // need to print memory location
     }
     // if-loop }
 }
@@ -459,7 +461,7 @@ void controller (CPU_p *cpu) {
 int main(int argc, char* argv[]) {
     char *garbage;
     memory[0] = strtol(argv[1],&garbage,16);
-    printf("Here");
+    //printf("Here");
     CPU_p cpu;
     controller(&cpu);
 }
