@@ -44,23 +44,17 @@ unsigned int executeNot(unsigned int Rs1, CPU_p *cpu) {
     int i;
     int j;
 
-
-
-
-    // for (i = 0; i < 16; i++) {
-    //     if (s1Arr[i] == 0) {
-    //         s1Arr[i] = 1;
-    //     } else {
-    //         s1Arr[i] = 0;
-    //     }
-    // }
-    // for (j = 15; j >= 0; j--) {
-    //     resultBin += s1Arr[j] * pow(10, 15 - j);
-    // }
-    printf("%d\n",cpu->registers[Rs1]);
-    int temp = cpu->registers[Rs1];
-    resultBin = ~temp;
-    printf("RESULT FOR NOT IS %d\n", resultBin);
+    for (i = 0; i < 16; i++) {
+        if (s1Arr[i] == 0) {
+            s1Arr[i] = 1;
+        } else {
+            s1Arr[i] = 0;
+        }
+    }
+    for (j = 15; j >= 0; j--) {
+        resultBin += s1Arr[j] * pow(10, 15 - j);
+    }
+    
     return resultBin;
 }
 
@@ -476,6 +470,7 @@ void controller (CPU_p *cpu) {
             fprintf(fp, "R%d: %u, \n", r, cpu->registers[r]);
         }
         fprintf(fp,"IR: %04X, PC: %d \n", cpu->IR, cpu->PC); // need to print memory location
+        fprintf(fp, "MAR = %d   MDR = %d \n",cpu->MAR,cpu->MDR);
         //fprintf(fp, "%s\n", );
     }
     // if-loop }
