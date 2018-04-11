@@ -98,15 +98,15 @@ unsigned int executeAdd(unsigned int Rs1, unsigned int Rs2,
 
     printf("Things passes here are %d, %d, %d, %d \n",Rs1,Rs2,offset,mode );
     if (mode == 0) {
-        resultInt = twosCBinToInt(Rs1) + twosCBinToInt(Rs2);
+        resultInt = Rs1 + Rs2;
     } else {
         if (offset / 10000 == 1) {
             o += 1111111111100000;
         }
-        resultInt = twosCBinToInt(Rs1) + twosCBinToInt(o);
+        resultInt = Rs1 + o;
     }
     printf(" add result is %d\n",resultInt);
-    return twosCIntToBinary(resultInt, cpu); // ???
+    return resultInt; 
 }
 
 unsigned int executeAnd(unsigned int Rs1, unsigned int Rs2,
@@ -208,7 +208,7 @@ void controller (CPU_p *cpu) {
             case FETCH: // microstates 18, 33, 35 in the book
                 //printf("Here in FETCH\n");
                 // get memory[PC] into IR - memory is a global array
-                cpu->IR = memory[cpu->PC];
+                cpu->IR = memory[i];
                 // increment PC
                 cpu->PC++;
                 printf("Contents of IR = %04X\n", cpu->IR);
@@ -425,7 +425,7 @@ void controller (CPU_p *cpu) {
             case STORE: // Look at ST. Microstate 16 is the store to memory
                 switch (opcode) {
                     case 1: //ADD
-                        registers[Rd] = MDR;
+                        cpu->registers[Rd] = MDR;
                         break;
                     case 5: //AND
                         registers[Rd] = MDR;
@@ -454,14 +454,14 @@ void controller (CPU_p *cpu) {
                 state = FETCH;
         }
 
-        // FILE *fp;
-        // fp = fopen("output.txt","w");
+        FILE *fp;
+        fp = fopen("output.txt","w");
         int r;
         for (r = 0; r < 8; r++) {
-            printf( "R%d: %u, \n", r, cpu->registers[r]);
+            fprintf(fp, "R%d: %u, \n", r, cpu->registers[r]);
         }
-
-        printf("IR: %u, PC: %u", cpu->IR, cpu->PC); // need to print memory location
+        fprintf(fp,"IR: %04X, PC: %d \n", cpu->IR, cpu->PC); // need to print memory location
+        //fprintf(fp, "%s\n", );
     }
     // if-loop }
 }
