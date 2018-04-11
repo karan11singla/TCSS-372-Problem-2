@@ -43,16 +43,24 @@ unsigned int executeNot(unsigned int Rs1, CPU_p *cpu) {
     unsigned int resultBin;
     int i;
     int j;
-    for (i = 0; i < 16; i++) {
-        if (s1Arr[i] == 0) {
-            s1Arr[i] = 1;
-        } else {
-            s1Arr[i] = 0;
-        }
-    }
-    for (j = 15; j >= 0; j--) {
-        resultBin += s1Arr[j] * pow(10, 15 - j);
-    }
+
+
+
+
+    // for (i = 0; i < 16; i++) {
+    //     if (s1Arr[i] == 0) {
+    //         s1Arr[i] = 1;
+    //     } else {
+    //         s1Arr[i] = 0;
+    //     }
+    // }
+    // for (j = 15; j >= 0; j--) {
+    //     resultBin += s1Arr[j] * pow(10, 15 - j);
+    // }
+    printf("%d\n",cpu->registers[Rs1]);
+    int temp = cpu->registers[Rs1];
+    resultBin = ~temp;
+    printf("RESULT FOR NOT IS %d\n", resultBin);
     return resultBin;
 }
 
@@ -98,12 +106,12 @@ unsigned int executeAdd(unsigned int Rs1, unsigned int Rs2,
 
     printf("Things passes here are %d, %d, %d, %d \n",Rs1,Rs2,offset,mode );
     if (mode == 0) {
-        resultInt = Rs1 + Rs2;
+        resultInt = cpu->registers[Rs1] + cpu->registers[Rs2];
     } else {
         if (offset / 10000 == 1) {
             o += 1111111111100000;
         }
-        resultInt = Rs1 + o;
+        resultInt = cpu->registers[Rs1] + o;
     }
     printf(" add result is %d\n",resultInt);
     return resultInt; 
@@ -111,10 +119,13 @@ unsigned int executeAdd(unsigned int Rs1, unsigned int Rs2,
 
 unsigned int executeAnd(unsigned int Rs1, unsigned int Rs2,
                         unsigned int offset, unsigned int mode, CPU_p *cpu) {
+    
     unsigned int *s1Arr = toArray(Rs1);
     unsigned int resultBin;
     unsigned int o = offset;
     int i;
+
+    printf("Things passes here are %d, %d, %d, %d \n",Rs1,Rs2,offset,mode );
     if (mode == 0) { // need to parse mode from IR
         unsigned int *s2Arr = toArray(Rs2);
         for (i = 15; i >= 0; i--) {
@@ -123,15 +134,19 @@ unsigned int executeAnd(unsigned int Rs1, unsigned int Rs2,
             }
         }
     } else {
-        if (offset / 10000 == 1) {
-            o += 1111111111100000;
-        }
-        unsigned int *imm5Arr = toArray(o);
-        for (i = 15; i >= 11; i--) {
-            if (s1Arr[i] == 1 && imm5Arr[i] == 1) {
-                resultBin += pow(10, 15 - i);
-            }
-        }
+
+        resultBin = cpu->registers[Rs1] & o;
+
+        printf("RESULT IS %d \n",resultBin);
+        // if (offset / 10000 == 1) {
+        //     o += 1111111111100000;
+        // }
+        // unsigned int *imm5Arr = toArray(o);
+        // for (i = 15; i >= 11; i--) {
+        //     if (s1Arr[i] == 1 && imm5Arr[i] == 1) {
+        //         resultBin += pow(10, 15 - i);
+        //     }
+        // }
     }
     return resultBin;
 }
@@ -226,7 +241,7 @@ void controller (CPU_p *cpu) {
                 // extract the bit fields from the IR into these variables
 
                 opcode = cpu->IR >> 12;
-                //printf("OPCODE IS %d \n",opcode);
+                printf("OPCODE IS %d \n",opcode);
 
                 if(opcode == 1 || opcode == 5 || opcode == 9 || opcode == 2) {
                     // gets destination register for ADD, AND, NOT, LD
@@ -247,7 +262,6 @@ void controller (CPU_p *cpu) {
                         temp = (cpu->IR << 10);
                         mode = (temp >> 15);
 
-
                         if(mode == 1) {
                             unsigned short temp3 = (cpu->IR << 11);
                             offset = temp3 >> 11;
@@ -259,7 +273,7 @@ void controller (CPU_p *cpu) {
                             //printf("RS2 HIT RS2 HIT  RS2 HIT ");
                         }
                     }
-                    printf(" DR = %d  Rs1 = %d  mode= %d  Rs2 = %d \n", Rd, Rs1,mode, Rs2);
+                    printf("DR = %d  Rs1 = %d  mode= %d  Rs2 = %d \n", Rd, Rs1,mode, Rs2);
                 }
 
                 // TRAP
@@ -322,8 +336,8 @@ void controller (CPU_p *cpu) {
                         break;
                     }
                     case 5: // and
-                        MAR = registers[Rs1] + offset;
-                        MDR = registers[Rd];
+                        // MAR = registers[Rs1] + offset;
+                        // MDR = registers[Rd];
                         break;
                     case 2: // ld
                         MAR = cpu->PC + offset;
@@ -396,6 +410,7 @@ void controller (CPU_p *cpu) {
                     case 5: //AND
                         MDR = executeAnd(Rs1, Rs2, offset, mode, cpu);
                         cc = setCC(Rd);
+                        printf("MDR VALUE IS %d \n", MDR);
                         break;
                     case 9: //NOT
                         MDR = executeNot(Rs1, cpu);
@@ -428,10 +443,10 @@ void controller (CPU_p *cpu) {
                         cpu->registers[Rd] = MDR;
                         break;
                     case 5: //AND
-                        registers[Rd] = MDR;
+                        cpu->registers[Rd] = MDR;
                         break;
                     case 9: //NOT
-                        registers[Rd] = MDR;
+                        cpu->registers[Rd] = MDR;
                         break;
                     case 2: //LD
                         registers[Rd] = MDR;
@@ -473,7 +488,7 @@ int main(int argc, char* argv[]) {
     CPU_p cpu;
     int r;
     for (r = 0; r < 8; r++) {
-             cpu.registers[r] = 0;
+             cpu.registers[r] = r;
         }
     controller(&cpu);
 }
