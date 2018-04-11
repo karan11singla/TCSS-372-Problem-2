@@ -95,6 +95,8 @@ unsigned int executeAdd(unsigned int Rs1, unsigned int Rs2,
                         unsigned int offset, unsigned int mode, CPU_p *cpu) {
     signed int resultInt;
     unsigned int o = offset;
+
+    printf("Things passes here are %d, %d, %d, %d \n",Rs1,Rs2,offset,mode );
     if (mode == 0) {
         resultInt = twosCBinToInt(Rs1) + twosCBinToInt(Rs2);
     } else {
@@ -103,6 +105,7 @@ unsigned int executeAdd(unsigned int Rs1, unsigned int Rs2,
         }
         resultInt = twosCBinToInt(Rs1) + twosCBinToInt(o);
     }
+    printf(" add result is %d\n",resultInt);
     return twosCIntToBinary(resultInt, cpu); // ???
 }
 
@@ -195,7 +198,7 @@ void controller (CPU_p *cpu) {
         unsigned int cc; // condition codes
         unsigned int mode;
         unsigned int trap_vector;
-        unsigned int registers[8] = {1,2,3,4,5,6,7,8};
+        unsigned int registers[8] = {0,1,2,3,4,5,6,7};
         unsigned int MAR, MDR;
         unsigned int nzp;
         int state = FETCH;
@@ -288,7 +291,7 @@ void controller (CPU_p *cpu) {
                 }
 
                 state = EVAL_ADDR;
-                break;
+                //break;
             case EVAL_ADDR:
                 // Look at the LD instruction to see microstate 2 example
                 switch (opcode) {
@@ -299,11 +302,16 @@ void controller (CPU_p *cpu) {
                         break;
                     }
 
-                    case 1: // add
-                        
-                        MAR = registers[Rs1] + offset;
-                        MDR = registers[Rd];
-                        break;
+                    // case 1: // add
+
+                    //     if(mode == 0) {
+
+                    //     } else {
+
+                    //     }
+                    //     MAR = registers[Rs1] + offset;
+                    //     MDR = registers[Rd];
+                    //     break;
                     case 3: //ST
                     {
                         unsigned short temp = (cpu->IR << 4);
@@ -334,7 +342,7 @@ void controller (CPU_p *cpu) {
                 // register
                 }
                 state = FETCH_OP;
-                break;
+                //break;
             case FETCH_OP:
             // Look at ST. Microstate 23 example of getting a value out of a
             // register
@@ -378,7 +386,7 @@ void controller (CPU_p *cpu) {
 
                 }
                 state = EXECUTE;
-                break;
+                //break;
             case EXECUTE: // Note that ST does not have an execute microstate
                 switch (opcode) {
                     case 1: //ADD
@@ -413,7 +421,7 @@ void controller (CPU_p *cpu) {
                     // see below for TRAP x25 (HALT)
                 }
                 state = STORE;
-                break;
+               //break;
             case STORE: // Look at ST. Microstate 16 is the store to memory
                 switch (opcode) {
                     case 1: //ADD
@@ -463,5 +471,9 @@ int main(int argc, char* argv[]) {
     memory[0] = strtol(argv[1],&garbage,16);
     //printf("Here");
     CPU_p cpu;
+    int r;
+    for (r = 0; r < 8; r++) {
+             cpu.registers[r] = 0;
+        }
     controller(&cpu);
 }
