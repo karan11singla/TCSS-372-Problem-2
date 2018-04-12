@@ -356,8 +356,15 @@ void controller (CPU_p *cpu) {
                 // compute effective address, e.g. add sext(immed7) to
                 // register
                 }
+
+                if(opcode == 15) {
+
+                    break;
+                }
                 state = FETCH_OP;
                 //break;
+
+
             case FETCH_OP:
             // Look at ST. Microstate 23 example of getting a value out of a
             // register
