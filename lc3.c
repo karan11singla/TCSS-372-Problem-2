@@ -54,7 +54,7 @@ unsigned int executeNot(unsigned int Rs1, CPU_p *cpu) {
     for (j = 15; j >= 0; j--) {
         resultBin += s1Arr[j] * pow(10, 15 - j);
     }
-    
+
     return resultBin;
 }
 
@@ -108,12 +108,12 @@ unsigned int executeAdd(unsigned int Rs1, unsigned int Rs2,
         resultInt = cpu->registers[Rs1] + o;
     }
     printf(" add result is %d\n",resultInt);
-    return resultInt; 
+    return resultInt;
 }
 
 unsigned int executeAnd(unsigned int Rs1, unsigned int Rs2,
                         unsigned int offset, unsigned int mode, CPU_p *cpu) {
-    
+
     unsigned int *s1Arr = toArray(Rs1);
     unsigned int resultBin;
     unsigned int o = offset;
@@ -127,6 +127,7 @@ unsigned int executeAnd(unsigned int Rs1, unsigned int Rs2,
                 resultBin += pow(10, 15 - i);
             }
         }
+        printf("RESULT IS %d \n",resultBin);
     } else {
 
         resultBin = cpu->registers[Rs1] & o;
@@ -147,27 +148,32 @@ unsigned int executeAnd(unsigned int Rs1, unsigned int Rs2,
 
 void executeLoad(unsigned int Rd, unsigned int offset, CPU_p *cpu) {
     unsigned int o;
+    printf("Things passes here are %d, %d \n",Rd,offset);
     if (offset / 100000000 == 1) {
         o += 1111111000000000;
     }
     cpu->MAR = cpu->PC + o;
     cpu->MDR = memory[cpu->MAR];
+    printf("memory[MAR: %d] is loaded into MDR: %d \n",cpu->MAR,cpu->MDR);
 }
 
 void executeStore(unsigned int Rs1, unsigned int offset, CPU_p *cpu) {
     unsigned int o;
+    printf("Things passes here are %d, %d \n",Rs1,offset);
     if (offset / 100000000 == 1) {
         o += 1111111000000000;
     }
     cpu->MAR = cpu->PC + o;
     cpu->MDR = cpu->registers[Rs1];
     memory[cpu->MAR] = cpu->MDR;
+    printf("MDR: %d is stored into memory[MAR: %d] \n",cpu->MDR,cpu->MAR);
 }
 
 void executeBranch(unsigned int offset, unsigned int cc, unsigned int nzp, CPU_p *cpu) {
     unsigned int *ccArr = toArray(cc);
     unsigned int *nzpArr = toArray(nzp);
     int pass = 0;
+    printf("Things passes here are %d, %d, %d \n",offset,cc,nzp);
     int i;
     for (i = 15; i >= 13; i--) {
         if (ccArr[i] == 1 && nzpArr[i] == 1) {
@@ -181,6 +187,7 @@ void executeBranch(unsigned int offset, unsigned int cc, unsigned int nzp, CPU_p
         }
         cpu->PC += o;
     }
+    printf("BRANCH TAKEN?: %d PC IS %04X \n",pass,cpu->PC);
 }
 
 void executeTrap(int trap_vector) {
@@ -453,6 +460,7 @@ void controller (CPU_p *cpu) {
                         break;
                     case 12: //JMP
                         cpu->PC = registers[Rs1];
+                        printf("PC IS %04X \n",cpu->PC);
                         break;
                     case 15: //TRAP
                         break;
