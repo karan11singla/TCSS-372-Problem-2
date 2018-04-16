@@ -1,4 +1,8 @@
-// lc3.h
+/*
+Karan Singla
+Enoch Chan
+*/
+
 
 #define FETCH 0
 #define DECODE 1

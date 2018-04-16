@@ -1,4 +1,7 @@
-// lc3.c
+/*
+Karan Singla
+Enoch Chan
+*/
 
 
 #include<stdio.h>
